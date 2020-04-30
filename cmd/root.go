@@ -90,5 +90,7 @@ func Execute() {
 // GetRootCmd gives an independent root Command copy
 func GetRootCmd() *cobra.Command {
 	root := rootCmd
+	pr := GetPrCmd()
+	root.AddCommand( pr)
 	return &root
 }

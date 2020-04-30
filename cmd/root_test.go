@@ -1,38 +1,16 @@
 package cmd
 
 import (
-	"bytes"
-	"github.com/spf13/cobra"
+	"github.com/flanksource/gohub-helper/cmd/test"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
 
-// executeCommand is a test utility function to execute the command
-// with given args and returns the produced output and error
-// as strings.
-func executeCommand(root *cobra.Command, args ...string) (stdout string, stderr string, err error) {
-	_, stdout, stderr, err = executeCommandC(root, args...)
-	return stdout, stderr, err
-}
 
-// executeCommandC is a test utility function to execute the command
-// with given args and returns the result command and the produced output and error
-// as strings.
-func executeCommandC(root *cobra.Command, args ...string) (c *cobra.Command, stdout string, stderr string, err error) {
-	bufStdout := new(bytes.Buffer)
-	bufStderr := new(bytes.Buffer)
-	root.SetOut(bufStdout)
-	root.SetErr(bufStderr)
-	root.SetArgs(args)
-
-	c, err = root.ExecuteC()
-
-	return c, bufStdout.String(), bufStderr.String(), err
-}
 
 func TestRootVersion(t *testing.T) {
 	root := GetRootCmd()
-	stdout, stderr, err := executeCommand(root,"")
+	stdout, stderr, err := test.ExecuteCommand(root,"")
 	t.Logf("Output:\n%v",stdout)
 	t.Logf("Error:\n%v",stderr)
 	assert.NoErrorf(t, err, "Command execution failed with error: %v", err)
@@ -48,7 +26,7 @@ func TestRoot_HasPrSubcommand(t *testing.T) {
 }
 
 func TestRoot_PrSubcommandRunsWithoutError(t *testing.T) {
-	stdout, stderr, err := executeCommand(GetRootCmd(), prCmdString...)
+	stdout, stderr, err := test.ExecuteCommand(GetRootCmd(), prCmdString...)
 	t.Logf("Output:\n%v",stdout)
 	t.Logf("Error:\n%v",stderr)
 	assert.NoErrorf(t, err, "Command execution failed with error: %v", err)
